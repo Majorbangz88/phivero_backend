@@ -1,14 +1,32 @@
 import userModel from "../models/userModel.js";
-import validator from "validator/es";
+import validator from 'validator/index.js';
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const createToken = (Id) => {
+const createToken = (id) => {
     return jwt.sign({id}, process.env.JWT_SECRET)
 }
 
 const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
 
+        const user = await userModel.findOne({email});
+        if (!user) {
+            return res.json({success: false, message: "User doesn't exist"})
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (isMatch) {
+            const token = createToken(user._id);
+            res.json({success: true, token});
+        } else {
+            res.json({success: false, message: 'Invalid credentials'});
+        }
+    } catch (error) {
+        console.error(error)
+        res.json({success: false, message: 'Invalid credentials'});
+    }
 }
 
 const registerUser = async (req, res) => {
@@ -44,7 +62,7 @@ const registerUser = async (req, res) => {
         const user = await newUser.save();
 
         const token = createToken(user._id);
-        res.json({success: true, token});
+        res.status(200).json({success: true, token});
 
     } catch (error) {
         console.error(error);
@@ -54,6 +72,8 @@ const registerUser = async (req, res) => {
     }
 }
 
-const adminLogin = async (req, res) => {}
+const adminLogin = async (req, res) => {
 
-export default { loginUser, registerUser, adminLogin };
+}
+
+export { loginUser, registerUser, adminLogin };
