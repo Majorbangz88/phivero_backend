@@ -1,5 +1,6 @@
 import userModel from "../models/userModel.js";
 import req from "express/lib/request.js";
+import res from "express/lib/response.js";
 
 
 const addToCart = async (req, res) => {
@@ -50,6 +51,18 @@ const updateCart = async (req, res) => {
 }
 
 const getUserCart = async () => {
+    try {
+        const { userId } = req.params;
+
+        const userData = await userModel.findById(userId);
+        let cartData = await userData.cartData;
+
+        res.status(200).json({success: true, cartData});
+
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({success: false, message: error.message});
+    }
 
 }
 
