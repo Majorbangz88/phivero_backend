@@ -57,7 +57,7 @@ const userOrders = async (req, res) => {
     try {
         const {userId} = req.body;
 
-        const foundOrders = orderModel.find({userId})
+        const foundOrders = await orderModel.find({userId})
         res.json({success: true, foundOrders});
     } catch (error) {
         console.log(error);
