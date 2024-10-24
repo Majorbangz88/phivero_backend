@@ -9,7 +9,7 @@ const placeOrderCash = async (req, res) => {
         const orderData = {
             userId,
             items,
-            address
+            address,
             amount,
             paymentMethod: 'COD',
             payment: false,
@@ -55,9 +55,13 @@ const allOrders = async (req, res) => {
 
 const userOrders = async (req, res) => {
     try {
+        const {userId} = req.body;
 
+        const foundOrders = orderModel.find({userId})
+        res.json({success: true, foundOrders});
     } catch (error) {
-
+        console.log(error);
+        res.status(400).json({success: false, message: error.message});
     }
 }
 
