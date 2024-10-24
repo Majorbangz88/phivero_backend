@@ -47,9 +47,12 @@ const placeOrderRazorPay = async (req, res) => {
 
 const allOrders = async (req, res) => {
     try {
+        const foundOrders = orderModel.find({});
+        res.json({success: true, foundOrders});
 
     } catch (error) {
-
+        console.log(error)
+        res.json({success: false, message: error.message});
     }
 }
 
