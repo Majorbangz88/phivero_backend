@@ -27,6 +27,7 @@ app.use(cors({
     credentials: true,
 }));
 
+app.options('*', cors());
 
 app.use('/api/user', userRouter);
 app.use('/api/product', productRouter);
